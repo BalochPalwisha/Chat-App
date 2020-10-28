@@ -61,10 +61,10 @@ const SoundComponent = (props) => {
         soundHelper.playSound(props.filepath, (d, res, err) => {
             console.log("Duration Of Track: " + d + "timeeeee----", res);
             if (res == "success") {
-                setPlayState('pause');
+                 setPlayState('pause');
                 setCurrentAudioTime(0)
-                setTempTime(0)
                 removerInterval();
+               alert('completed')
             }
             else {
                 console.log(err)
@@ -148,6 +148,7 @@ const SoundComponent = (props) => {
     const durationString = getAudioTimeString(duration);
 
     console.log('CurrentState', playState);
+    console.log('CurrentAudioTime', currentTime);
     return (
         <View>
             <View style={{ flexDirection: 'row', alignItems: 'center', right: 20 }} >

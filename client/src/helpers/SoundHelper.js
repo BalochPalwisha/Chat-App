@@ -5,6 +5,8 @@ class SoundHelper {
 
     playSound(path, cb) {
 
+        console.log('path of sound', path);
+
         try {
 
             this.sound = new Sound(path, "", error => {
@@ -22,9 +24,10 @@ class SoundHelper {
                 this.sound.play(success => {
 
                     if (success) {
+
                         console.log('successfully finished playing');
                         res = "success"
-                        //  this.sound.reset();
+                       // this.sound.reset();
             
                     } else {
                         console.log('playback failed due to audio decoding errors');

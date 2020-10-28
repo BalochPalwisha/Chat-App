@@ -16,6 +16,8 @@ const prepareRecordingPath = (audioPath) => {
 
  export const handleAudioAfterPermission = (audioPath, cb) => {
 
+    console.log(audioPath, "Audioooo")
+
     requestPermision();
 
     AudioRecorder.requestAuthorization().then((isAuthorised) => {

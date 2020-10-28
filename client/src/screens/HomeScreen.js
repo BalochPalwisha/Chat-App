@@ -11,11 +11,12 @@ import MaterialIcon from "react-native-vector-icons/MaterialIcons";
 import { Fab } from 'native-base';
 import Loading from '../components/Loading';
 import NodeServer from '../helpers/NodeSocket';
+import AudioRecorder from '../helpers/AudioRecorder'
 
 const server = NodeServer.getInstance()
 
 export default function HomeScreen({ navigation }) {
-
+ 
   const { user, logout } = useAuth();
 
   let jsonP = JSON.parse(user)
@@ -28,6 +29,7 @@ export default function HomeScreen({ navigation }) {
     console.log('connected!')
   });
 
+ 
 
   const [userChats, setUserChats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ export default function HomeScreen({ navigation }) {
   const getMessages = async () => {
     try {
       let response = await axios.get(
-        'http://192.168.86.44:3000/api/chatUsers' +
+        'http://192.168.86.54:3000/api/chatUsers' +
         '/chats/' +
         jsonP.userId,
       );
@@ -83,7 +85,7 @@ export default function HomeScreen({ navigation }) {
           if (response.data[i].sender == jsonP.userId) {
             await axios
               .get(
-                'http://192.168.86.44:3000/api/chatUsers/find/' +
+                'http://192.168.86.54:3000/api/chatUsers/find/' +
                 response.data[i].reciever,
               )
               .then(res => {
@@ -100,7 +102,7 @@ export default function HomeScreen({ navigation }) {
 
             await axios
               .get(
-                'http://192.168.86.44:3000/api/chatUsers/find/' +
+                'http://192.168.86.54:3000/api/chatUsers/find/' +
                 response.data[i].sender,
               )
               .then(res => {
@@ -314,7 +316,7 @@ export default function HomeScreen({ navigation }) {
   }
   const getImages = async () => {
     await axios
-      .get('http://192.168.86.44:3000/api/images/getImages')
+      .get('http://192.168.86.54:3000/api/images/getImages')
       .then(res => {
         console.log("res6", res)
         setImages(res.data)
@@ -343,7 +345,7 @@ export default function HomeScreen({ navigation }) {
       
       {fabComponent()}
 
-
+  
 
     </View>
   );

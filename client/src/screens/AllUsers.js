@@ -20,8 +20,8 @@ export default function AllUsers({ navigation }) {
     let jsonP = JSON.parse(user)
 
     //initialize the sockets
-    const socket = io('http://192.168.86.54:3000/');
-    socket.connect();
+    // const socket = io('http://192.168.86.54:3000/');
+    // socket.connect();
 
 
     const [AllUsers, setUsers] = useState([]);

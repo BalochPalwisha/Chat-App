@@ -4,7 +4,7 @@ const RETRY = 2;
 
 const login = async (email, password, callback) => {
 
-    let url = "http://192.168.86.44:3000/api/users/login"
+    let url = "http://192.168.86.54:3000/api/users/login"
     var user1 = superagent.agent();
     user1
         .post(url)
@@ -25,7 +25,7 @@ const registerUser = async (username, email, password,password2, callback) => {
 
     console.log(username,email, password2, password)
 
-    let url = "http://192.168.86.44:3000/api/users/register"
+    let url = "http://192.168.86.54:3000/api/users/register"
     var user1 = superagent.agent();
     user1
         .post(url)
@@ -44,7 +44,7 @@ const registerUser = async (username, email, password,password2, callback) => {
 }
 
 const getUsers = (callback) => {
-    let url = "http://192.168.86.44:3000/api/chatUsers/getUsers";
+    let url = "http://192.168.86.54:3000/api/chatUsers/getUsers";
     get(url, callback)
 }
 

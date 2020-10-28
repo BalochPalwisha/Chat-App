@@ -2,7 +2,7 @@ import io from 'socket.io-client';
 
 
 //initialize the sockets
-const url = 'http://192.168.86.44:3000/';
+const url = 'http://192.168.86.54:3000/';
 
  export default class NodeSocket {
     static myInstance = null;

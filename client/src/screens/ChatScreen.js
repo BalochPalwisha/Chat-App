@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity, FlatList, Image, Platform, To
 import CustomHeader from "../components/Header"
 import useAuth from '../hooks/useAuth';
 import axios from 'axios';
-import { GiftedChat, Bubble, Send, InputToolbar, Time, Colors, Message, MessageImage, MessageText } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Send, InputToolbar, Time, Colors, Message, MessageImage, MessageText, } from 'react-native-gifted-chat';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { IconButton } from 'react-native-paper';
 import NodeServer from '../helpers/NodeSocket';
@@ -18,9 +18,13 @@ import Slider from 'react-native-slider';
 import SoundComponent from '../components/SoundComponent';
 import Entypo from "react-native-vector-icons/Entypo";
 import * as AudioComponent from '../components/AudioComponent';
+import CustomView from "./CustomView";
+import AndroidSoundComponent from '../components/AndroidSoundComponent';
 
 
 const server = NodeServer.getInstance()
+
+const file = null;
 
 export default function ChatScreen(props) {
 
@@ -42,7 +46,7 @@ export default function ChatScreen(props) {
   const [recording, setRecording] = useState(false);
   const [stoppedRecording, setStoppedRecording] = useState(false);
   const [audioPath] = useState(`${AudioUtils.DocumentDirectoryPath}/${messageIdGenerator()}recording.aac`);
-
+  const [fileObj, setFileObj] = useState([])
 
   useEffect(() => {
 
@@ -66,6 +70,8 @@ export default function ChatScreen(props) {
       getMessages();
     })
 
+    console.log('FilePath', audioPath);
+
     AudioComponent.handleAudioAfterPermission(audioPath, (isAutharized) => {
       console.log('isAuthorized', isAutharized);
       setPermission(isAutharized)
@@ -78,7 +84,7 @@ export default function ChatScreen(props) {
     console.log('Coming from server');
     try {
       let response = await axios.get(
-        'http://192.168.86.44:3000/api/chatUsers/' +
+        'http://192.168.86.54:3000/api/chatUsers/' +
         '/chats/' +
         props.route.params.senderId +
         '/' +
@@ -115,7 +121,7 @@ export default function ChatScreen(props) {
       // return false;
 
       let response = await axios.post(
-        'http://192.168.86.44:3000/api/chatUsers/' + 'chats/',
+        'http://192.168.86.54:3000/api/chatUsers/' + 'chats/',
         formData,
       );
       if (response.status === 200) {
@@ -186,14 +192,13 @@ export default function ChatScreen(props) {
       const res = await DocumentPicker.pick({
         type: [DocumentPicker.types.allFiles],
       });
-
-      setSingleFile(res);
+      console.log('FileResponse', res)
+      setFileObj(res)
       uploadFile(res)
     } catch (err) {
-      setSingleFile(null);
 
       if (DocumentPicker.isCancel(err)) {
-        alert('Canceled from single doc picker');
+        // alert('Canceled from single doc picker');
       } else {
         alert('Error: ' + JSON.stringify(err));
         throw err;
@@ -216,7 +221,7 @@ export default function ChatScreen(props) {
     }
 
     axios
-      .post('http://192.168.86.44:3000/api/images/uploadFile', formData, config)
+      .post('http://192.168.86.54:3000/api/images/uploadFile', formData, config)
       .then(res => {
         //console.log(res);
         if (res.status === 200) {
@@ -239,7 +244,8 @@ export default function ChatScreen(props) {
             }
             imageMsg.push(msgObj)
           }
-          else {
+          else if (file.type == "image/jpeg" || file.type == "image/jpg" || file.type == "image/png") {
+
             let msgObj =
             {
               _id: id,
@@ -251,6 +257,22 @@ export default function ChatScreen(props) {
                 avatar: userPhoto,
               },
               image: res.data.img,
+            }
+            imageMsg.push(msgObj)
+
+          }
+          else {
+            let msgObj =
+            {
+              _id: id,
+              text: '',
+              createdAt: new Date(),
+              user: {
+                _id: userId,
+                name: userName,
+                avatar: userPhoto,
+              },
+              "file": res.data.img,
             }
             imageMsg.push(msgObj)
 
@@ -284,7 +306,7 @@ export default function ChatScreen(props) {
 
 
     axios
-      .post('http://192.168.86.44:3000/api/images/uploadFile', formData, config)
+      .post('http://192.168.86.54:3000/api/images/uploadFile', formData, config)
       .then(res => {
         //console.log(res);
         if (res.status === 200) {
@@ -333,6 +355,8 @@ export default function ChatScreen(props) {
     }
   }
 
+
+
   const onFinishRecording = () => {
 
     const fileName = `${messageIdGenerator()}.aac`;
@@ -353,7 +377,7 @@ export default function ChatScreen(props) {
   const renderInputToolbar = props => {
     return (
       <>
-     
+
         <InputToolbar
           {...props}
           containerStyle={{
@@ -420,7 +444,7 @@ export default function ChatScreen(props) {
             />
           </TouchableOpacity>
         </View>
-   
+
       </>
     );
   };
@@ -560,18 +584,44 @@ export default function ChatScreen(props) {
         currentUser = true;
       }
 
-      return (
-        <View style={{ height: 40, width: 250, padding: 10, justifyContent: 'center', top: 12 }}>
+      if (Platform.OS == "android") {
+        return (
+          <View style={{ height: 40, width: 250, padding: 10, justifyContent: 'center', top: 12 }}>
 
-          <SoundComponent
-            filepath={props.currentMessage.audio}
-            user={currentUser}
+            <AndroidSoundComponent
+              filepath={props.currentMessage.audio}
+              user={currentUser}
 
-          />
-        </View>
-      )
+            />
+          </View>
+        )
+      }
+      else {
+
+        return (
+          <View style={{ height: 40, width: 250, padding: 10, justifyContent: 'center', top: 12 }}>
+
+            <SoundComponent
+              filepath={props.currentMessage.audio}
+              user={currentUser}
+
+            />
+          </View>
+        )
+      }
+
     }
   };
+
+  const renderCustomView = (props) => {
+
+    return (
+      <CustomView {...props} />
+
+
+    )
+
+  }
 
   return (
     <View style={styles.container}>
@@ -591,7 +641,7 @@ export default function ChatScreen(props) {
           avatar: userPhoto,
 
         }}
-        messagesContainerStyle={{paddingBottom:20}}
+        messagesContainerStyle={{ paddingBottom: 20 }}
         // showUserAvatar={true}
         alwaysShowSend={true}
         scrollToBottom
@@ -602,6 +652,7 @@ export default function ChatScreen(props) {
         timeTextStyle={{ left: { color: '#3F3D56' }, right: { color: '#3F3D56' } }}
         renderMessageVideo={renderMessageVideo}
         renderMessageAudio={renderAudio}
+        renderCustomView={renderCustomView}
 
       // renderMessage={renderMessage}
 

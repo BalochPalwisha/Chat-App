@@ -1,8 +1,7 @@
-import { View, StyleSheet, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Dimensions, Platform } from 'react-native';
 import Video from 'react-native-video'
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'; // and this
-import Orientation from 'react-native-orientation';
 import Slider from '@react-native-community/slider';
 import { Container, Header, Left, Title } from 'native-base';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
